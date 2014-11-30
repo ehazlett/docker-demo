@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"html/template"
+	"log"
 	"net/http"
 	"os"
 )
@@ -43,7 +44,7 @@ func main() {
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 	mux.HandleFunc("/", index)
 
-	fmt.Println("listening on :8080")
+	log.Println("listening on :8080")
 
 	if err := http.ListenAndServe(":8080", mux); err != nil {
 		fmt.Errorf("error serving: %s", err)
