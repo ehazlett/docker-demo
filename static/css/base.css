@@ -1,0 +1,16 @@
+html, body {
+    background: #d7d7d7;
+    color: #5e5e5e;
+}
+.title {
+    font-size: 38pt;
+}
+.info {
+    font-size: 12pt;
+    color: #7e7e7e;
+}
+div.content {
+    margin: 0 auto 0 auto;
+    width: 100%;
+    text-align: center;
+}
