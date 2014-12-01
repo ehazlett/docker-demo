@@ -10,7 +10,14 @@ html, body {
     color: #7e7e7e;
 }
 div.content {
-    margin: 5% auto 0 auto;
+    margin: 2% auto 0 auto;
     width: 100%;
     text-align: center;
+}
+div.logs {
+    margin: 0 35% 0 35%;
+    width: 30%;
+    border: 1px solid #7a7a7a;
+    height: 175px;
+    overflow-y: scroll;
 }
