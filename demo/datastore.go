@@ -36,7 +36,7 @@ func NewDatastore(host string, port int, username string, password string, dbNam
 
 func (ds *Datastore) init() {
 	if _, err := ds.db.Exec(`create table if not exists logs (date timestamp without time zone, addr varchar(64), path varchar(256));`); err != nil {
-		log.Fatalf("unable to initdb: %s", err)
+		log.Printf("unable to initdb: %s\n", err)
 	}
 }
 

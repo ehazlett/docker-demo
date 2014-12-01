@@ -134,10 +134,6 @@ func main() {
 		DbSSLMode = sslMode
 	}
 
-	if DbHost == "" || DbPort == 0 || DbUser == "" || DbName == "" {
-		log.Fatalf("you must specify db-host, db-port, db-user and db-name")
-	}
-
 	ds, err := NewDatastore(DbHost, DbPort, DbUser, DbPass, DbName, DbSSLMode)
 	if err != nil {
 		log.Fatalf("unable to connect to datastore: %s", err)
