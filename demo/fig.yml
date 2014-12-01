@@ -3,6 +3,7 @@ app:
     entrypoint: /bin/bash
     command: -c "sleep 5 && go-wrapper run" # sleep because the postgres container isn't ready on first start
     environment:
+        - "TITLE=Docker Demo"
         - "DB_USER=demo"
         - "DB_PASS=demo"
         - "DB_NAME=demo"
