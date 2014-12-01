@@ -102,11 +102,11 @@ func main() {
 	flag.Parse()
 	// load vars from env
 	if DbHost == "" {
-		DbHost = os.Getenv("DB_HOST")
+		DbHost = os.Getenv("DB_PORT_5432_TCP_ADDR")
 	}
 
 	if DbPort == 0 {
-		port := os.Getenv("DB_PORT")
+		port := os.Getenv("DB_PORT_5432_TCP_PORT")
 		if port != "" {
 			p, err := strconv.Atoi(port)
 			if err != nil {
