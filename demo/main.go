@@ -30,6 +30,7 @@ func loadTemplate(filename string) (*template.Template, error) {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
+	log.Printf("request from %s\n", r.RemoteAddr)
 	t, err := loadTemplate("templates/index.html.tmpl")
 	if err != nil {
 		fmt.Printf("error loading template: %s\n", err)
