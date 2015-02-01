@@ -10,7 +10,8 @@ The `demo` directory contains the demo application.
 
 ## Build
 
-`docker build -t docker-demo .`
+- `make`
+- `docker build -t docker-demo .`
 
 ## Run
 
