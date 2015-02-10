@@ -5,4 +5,3 @@ ADD templates /templates
 EXPOSE 8080
 ENTRYPOINT ["/demo"]
 CMD ["-listen=:8080"]
-

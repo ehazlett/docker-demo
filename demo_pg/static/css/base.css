@@ -1,0 +1,23 @@
+html, body {
+    background: #d7d7d7;
+    color: #5e5e5e;
+}
+.title {
+    font-size: 38pt;
+}
+.info {
+    font-size: 12pt;
+    color: #7e7e7e;
+}
+div.content {
+    margin: 2% auto 0 auto;
+    width: 100%;
+    text-align: center;
+}
+div.logs {
+    margin: 0 35% 0 35%;
+    width: 30%;
+    border: 1px solid #7a7a7a;
+    height: 175px;
+    overflow-y: scroll;
+}

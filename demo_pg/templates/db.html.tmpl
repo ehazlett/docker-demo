@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <title>{{ .Title }}</title>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+        <meta name="author" content="Evan Hazlett">
+        <meta name="description" content="Docker Demo">
+        <link rel="stylesheet" type="text/css" href="/static/css/base.css">
+        <link rel="stylesheet" type="text/css" href="/static/font/style.css">
+    </head>
+    <body>
+        <div class="content">
+            <img src="/static/img/docker.png"/>
+            <h1 class="lsf title">{{ .Title }}</h1>
+            <div class="logs">
+                {{ range $index, $element := .Entries }}
+                <div>{{ $element.Date }}: {{ $element.Addr }}</div>
+                {{ end }}
+            </div>
+            <h4 class="lsf info">served from {{ .Hostname }}</h4>
+        </div>
+    </body>
+</html>
