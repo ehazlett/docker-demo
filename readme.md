@@ -3,12 +3,12 @@ This is a Go demo application used for demonstrating Docker.
 
 ## Environment Variables
 
-* `TITLE`: sets title in demo app
+- `TITLE`: sets title in demo app
 
 ## Build
+Note: you must have Docker to build
 
-- `make`
-- `docker build -t docker-demo .`
+`./script/build latest`
 
 ## Run
 
