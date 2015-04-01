@@ -10,5 +10,6 @@
         "DEMO": "true",
         "TITLE": "Freight Demo"
     },
-    "restart_policy": "always"
+    "restart_policy": "always",
+    "dockerfile_path": "/Dockerfile"
 }
