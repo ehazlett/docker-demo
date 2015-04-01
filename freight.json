@@ -1,0 +1,14 @@
+{
+    "name": "docker-demo",
+    "version": "0.0.1",
+    "labels": [
+        "us-east-1",
+        "us-west-2"
+    ],
+    "instances": 2,
+    "environment": {
+        "DEMO": "true",
+        "TITLE": "Freight Demo"
+    },
+    "restart_policy": "always"
+}
