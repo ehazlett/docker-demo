@@ -52,15 +52,21 @@ func index(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, cnt)
 }
 
+func ping(w http.ResponseWriter, r *http.Request) {
+	resp := fmt.Sprintf("ehazlett/docker-demo: hello %s\n", r.RemoteAddr)
+	w.Write([]byte(resp))
+}
+
 func main() {
 	flag.Parse()
 
 	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+	mux.HandleFunc("/ping", ping)
 	mux.HandleFunc("/", index)
 
 	log.Printf("listening on %s\n", listenAddr)
 
 	if err := http.ListenAndServe(listenAddr, mux); err != nil {
-		fmt.Errorf("error serving: %s", err)
+		log.Fatalf("error serving: %s", err)
 	}
 }
