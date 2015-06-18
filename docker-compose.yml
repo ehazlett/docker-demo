@@ -1,0 +1,4 @@
+app:
+    image: ehazlett/docker-demo:latest
+    ports:
+        - "8080"
