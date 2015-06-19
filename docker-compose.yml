@@ -1,4 +1,6 @@
 app:
     image: ehazlett/docker-demo:latest
+    hostname: dockercon
+    domainname: demo.local
     ports:
         - "8080"
