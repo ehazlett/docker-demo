@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>{{ .Title }}</title>
+        <title>{{ .Hostname }}</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
         <meta name="author" content="Evan Hazlett">
@@ -13,7 +13,7 @@
         <div class="content">
             <img src="/static/img/docker.png"/>
             <h1 class="lsf title">{{ .Title }}</h1>
-            <h4 class="lsf info">served from {{ .Hostname }}</h4>
+            <h2 class="lsf info">served from <em>{{ .Hostname }}</em></h2>
         </div>
     </body>
 </html>
