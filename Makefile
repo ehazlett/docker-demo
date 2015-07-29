@@ -6,6 +6,9 @@ REPO=ehazlett/docker-demo
 
 all: build
 
+test:
+	@go test -v ./...
+
 build:
 	@go build -a -tags 'netgo' -ldflags '-w -linkmode external -extldflags -static' .
 

@@ -1,5 +1,5 @@
 app:
-    image: ehazlett/docker-demo:latest
+    build: .
     hostname: dockercon
     domainname: demo.local
     ports:
