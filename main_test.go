@@ -4,8 +4,6 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
-
-	"github.com/stretchr/testify/assert"
 )
 
 func TestGetIndex(t *testing.T) {
@@ -18,7 +16,9 @@ func TestGetIndex(t *testing.T) {
 
 	}
 
-	assert.Equal(t, 200, res.StatusCode, "expected response code 200")
+	if res.StatusCode != 200 {
+		t.Fatal("expected 200 status")
+	}
 }
 
 func TestGetPing(t *testing.T) {
@@ -31,5 +31,7 @@ func TestGetPing(t *testing.T) {
 
 	}
 
-	assert.Equal(t, 200, res.StatusCode, "expected response code 200")
+	if res.StatusCode != 200 {
+		t.Fatal("expected 200 status")
+	}
 }
