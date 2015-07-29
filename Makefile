@@ -9,6 +9,9 @@ all: build
 test:
 	@go test -v ./...
 
+deps:
+	@go get -d ./...
+
 build:
 	@go build -a -tags 'netgo' -ldflags '-w -linkmode external -extldflags -static' .
 
