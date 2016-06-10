@@ -1,5 +1,6 @@
 .containers {
     height: 95vh;
+    overflow-y: auto;
 }
 .logo {
     width: 80%;

@@ -89,6 +89,9 @@ func main() {
 	mux.HandleFunc("/ping", ping)
 	mux.HandleFunc("/", index)
 
+	hostname := getHostname()
+
+	log.Printf("instance: %s\n", hostname)
 	log.Printf("listening on %s\n", listenAddr)
 
 	if err := http.ListenAndServe(listenAddr, mux); err != nil {
