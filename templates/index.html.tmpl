@@ -2,18 +2,31 @@
 <html lang="en">
     <head>
         <meta charset="utf-8">
-        <title>{{ .Hostname }}</title>
+        <title>{{ .Title }}</title>
         <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
         <meta name="author" content="Evan Hazlett">
         <meta name="description" content="Docker Demo">
-        <link rel="stylesheet" type="text/css" href="static/css/base.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+        <link rel="stylesheet" type="text/css" href="static/dist/semantic.min.css">
+        <link rel="stylesheet" type="text/css" href="static/css/default.css">
+        <script src="static/dist/semantic.min.js"></script>
+        <script src="static/js/app.js"></script>
     </head>
     <body>
-        <div class="content">
-            <img src="static/img/docker.png"/>
-            <h1 class="lsf title">{{ .Title }}</h1>
-            <h2 class="lsf info">served from <strong>{{ .Hostname }}</strong></h2>
+        <div class="ui two column relaxed padded grid">
+            <div class="six wide column">
+                <div class="ui container">
+                    <img class="logo" src="static/img/docker.png"/>
+                </div>
+            </div>
+            <div class="ten wide column">
+                <div class="ui padded raised segment containers">
+                    <h1 class="ui header">{{ .Title }}</h1>
+                    <div class="ui six stackable cards container-group">
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 </html>

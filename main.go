@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
 	"html/template"
@@ -19,10 +20,23 @@ type (
 		Title    string
 		Hostname string
 	}
+
+	Ping struct {
+		Instance string `json:"instance"`
+	}
 )
 
 func init() {
 	flag.StringVar(&listenAddr, "listen", ":8080", "listen address")
+}
+
+func getHostname() string {
+	hostname, err := os.Hostname()
+	if err != nil {
+		hostname = "unknown"
+	}
+
+	return hostname
 }
 
 func loadTemplate(filename string) (*template.Template, error) {
@@ -30,7 +44,15 @@ func loadTemplate(filename string) (*template.Template, error) {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
-	log.Printf("request from %s\n", r.Header.Get("X-Forwarded-For"))
+	remote := r.RemoteAddr
+
+	forwarded := r.Header.Get("X-Forwarded-For")
+	if forwarded != "" {
+		remote = forwarded
+	}
+
+	log.Printf("request from %s\n", remote)
+
 	t, err := loadTemplate("templates/index.html.tmpl")
 	if err != nil {
 		fmt.Printf("error loading template: %s\n", err)
@@ -39,10 +61,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	title := os.Getenv("TITLE")
 
-	hostname, err := os.Hostname()
-	if err != nil {
-		hostname = "unknown"
-	}
+	hostname := getHostname()
 
 	cnt := &Content{
 		Title:    title,
@@ -53,8 +72,14 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func ping(w http.ResponseWriter, r *http.Request) {
-	resp := fmt.Sprintf("ehazlett/docker-demo: hello %s\n", r.RemoteAddr)
-	w.Write([]byte(resp))
+	hostname := getHostname()
+	p := Ping{
+		Instance: hostname,
+	}
+
+	if err := json.NewEncoder(w).Encode(p); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+	}
 }
 
 func main() {
