@@ -20,6 +20,10 @@
                       url: "/ping",
                       dataType: "json",
                       cache: false,
+                      error: function() {
+                          $("#requests-error-count").text(parseInt($("#requests-error-count").text()) + 1);
+                          $(".error").addClass("red");
+                      },
                       success: function(data){
                           if ($.inArray(data.instance, containers) == -1) {
                               containers.push(data.instance);
@@ -93,7 +97,7 @@
                                 <div id="requests-count" class="value">0</div>
                                 <div class="label">requests</div>
                             </div>
-                            <div class="ui huge statistic">
+                            <div class="ui huge statistic error">
                                 <div id="requests-error-count" class="value">0</div>
                                 <div class="label">errors</div>
                             </div>
