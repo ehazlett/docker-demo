@@ -1,6 +1,6 @@
 FROM scratch
-ADD docker-demo /bin/docker-demo
-ADD static /static
+COPY docker-demo /bin/docker-demo
+COPY static /static
 ADD templates /templates
 EXPOSE 8080
 ENTRYPOINT ["/bin/docker-demo"]
