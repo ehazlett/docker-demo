@@ -17,8 +17,9 @@ var (
 
 type (
 	Content struct {
-		Title    string
-		Hostname string
+		Title     string
+		Hostname  string
+		ExtraInfo string
 	}
 
 	Ping struct {
@@ -60,12 +61,14 @@ func index(w http.ResponseWriter, r *http.Request) {
 	}
 
 	title := os.Getenv("TITLE")
+	extraInfo := os.Getenv("EXTRA_INFO")
 
 	hostname := getHostname()
 
 	cnt := &Content{
-		Title:    title,
-		Hostname: hostname,
+		Title:     title,
+		Hostname:  hostname,
+		ExtraInfo: extraInfo,
 	}
 
 	t.Execute(w, cnt)

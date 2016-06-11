@@ -26,7 +26,15 @@ function reload() {
               $(el).fadeToggle(250, function(){
                   $(el).fadeToggle(250);
               });
+
+              $("#container-count").text(containers.length);
+              if (containers.length > 1) {
+                  $("#container-count-label").text("containers");
+              } else {
+                  $("#container-count-label").text("container");
+              }
           }
+
     });
 }
 

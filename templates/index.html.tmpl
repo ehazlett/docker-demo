@@ -15,14 +15,25 @@
     </head>
     <body>
         <div class="ui two column relaxed padded grid">
-            <div class="six wide column">
+            <div class="six wide column meta">
                 <div class="ui container">
-                    <img class="logo" src="static/img/docker.png"/>
+                    <img class="logo center" src="static/img/docker.png"/>
+                    <div class="row centered title">
+                        <h1 class="ui header">{{ .Title }}</h1>
+                    </div>
+                    <div class="row centered">
+                        <div class="ui huge horizontal statistic">
+                            <div id="container-count" class="value"></div>
+                            <div id="container-count-label" class="label"></div>
+                        </div>
+                    </div>
+                    <div class="row centered extra-info">
+                        {{ .ExtraInfo }}
+                    </div>
                 </div>
             </div>
             <div class="ten wide column">
                 <div class="ui padded raised segment containers">
-                    <h1 class="ui header">{{ .Title }}</h1>
                     <div class="ui six cards doubling container-group">
                     </div>
                 </div>
