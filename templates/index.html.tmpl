@@ -11,25 +11,85 @@
         <link rel="stylesheet" type="text/css" href="static/dist/semantic.min.css">
         <link rel="stylesheet" type="text/css" href="static/css/default.css">
         <script src="static/dist/semantic.min.js"></script>
-        <script src="static/js/app.js"></script>
+
+        <script type="text/javascript">
+            var containers = [];
+            
+            function reload() {
+                $.ajax({
+                      url: "/ping",
+                      dataType: "json",
+                      cache: false,
+                      success: function(data){
+                          if ($.inArray(data.instance, containers) == -1) {
+                              containers.push(data.instance);
+                          }
+            
+                          for (var i=0; i<containers.length; i++) {
+                              var instanceName = containers[i];
+                              var el = $("#instance-" + instanceName);
+                              if (el.length == 0) {
+                                  console.log("creating instance " + instanceName);
+                                  var elData = '<div id="instance-' + instanceName + '" class="card container-instance"><div class="image"><img width="25%" height="25%" src="static/img/container.png"></div><div class="content centered view-computer"><div>' + instanceName + '</div></div></div>';
+                                  $("div.container-group").append(elData);
+                                  el = $("#instance-" + instanceName);
+                              }
+                          }
+            
+                          // "pulse"
+                          var el = $("#instance-" + data.instance);
+                          $(el).fadeToggle(250, function(){
+                              $(el).fadeToggle(250);
+                          });
+            
+                          $("#container-count").text(containers.length);
+                          if (containers.length > 1) {
+                              $("#container-count-label").text("containers");
+                          } else {
+                              $("#container-count-label").text("container");
+                          }
+            
+                          $("#current-container").text(data.instance);
+                          $("#container-backend").removeClass('hide');
+                          $("div.container-backend").show();
+                      }
+            
+                });
+            }
+            
+            setInterval(reload, {{ .RefreshInterval }});
+        </script>
     </head>
     <body>
-        <div class="ui two column relaxed padded grid">
+        <div class="ui two column relaxed doubling padded grid">
             <div class="six wide column meta">
                 <div class="ui container">
                     <img class="logo center" src="static/img/docker.png"/>
+
+                    {{if ne .Title ""}}
                     <div class="row centered title">
                         <h1 class="ui header">{{ .Title }}</h1>
                     </div>
+                    {{end}}
+
                     <div class="row centered">
                         <div class="ui huge horizontal statistic">
                             <div id="container-count" class="value"></div>
                             <div id="container-count-label" class="label"></div>
                         </div>
                     </div>
+                    <div class="row centered container-backend hide">
+                        <div class="ui small statistic">
+                            <div id="current-container" class="value"></div>
+                            <div class="label">current backend</div>
+                        </div>
+                    </div>
+
+                    {{ if ne .ExtraInfo "" }}
                     <div class="row centered extra-info">
                         {{ .ExtraInfo }}
                     </div>
+                    {{ end }}
                 </div>
             </div>
             <div class="ten wide column">

@@ -11,6 +11,15 @@ div.meta {
 .extra-info {
     margin-top: 30px;
 }
+.container-backend {
+    margin: 50px 0 20px 0;
+}
+div.value {
+    text-overflow: ellipsis;
+}
+.hide {
+    display: none;
+}
 h1.ui.header {
     font-size: 38pt;
 }
@@ -26,4 +35,18 @@ h1.ui.header {
 img.center {
     display: block;
     margin: 0 auto;
+}
+@media screen and (min-width: 990px) and (max-width: 1425px) {
+    .view-computer{
+        visibility: hidden;
+        display: none;
+        clear: both;
+    }    
+}
+@media screen and (min-width: 1425px) {
+    .view-computer{
+        visibility: show;
+        display: block;
+        clear: both;
+    }    
 }

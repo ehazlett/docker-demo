@@ -17,9 +17,10 @@ var (
 
 type (
 	Content struct {
-		Title     string
-		Hostname  string
-		ExtraInfo string
+		Title           string
+		Hostname        string
+		RefreshInterval string
+		ExtraInfo       string
 	}
 
 	Ping struct {
@@ -64,11 +65,16 @@ func index(w http.ResponseWriter, r *http.Request) {
 	extraInfo := os.Getenv("EXTRA_INFO")
 
 	hostname := getHostname()
+	refreshInterval := os.Getenv("REFRESH_INTERVAL")
+	if refreshInterval == "" {
+		refreshInterval = "1000"
+	}
 
 	cnt := &Content{
-		Title:     title,
-		Hostname:  hostname,
-		ExtraInfo: extraInfo,
+		Title:           title,
+		Hostname:        hostname,
+		RefreshInterval: refreshInterval,
+		ExtraInfo:       extraInfo,
 	}
 
 	t.Execute(w, cnt)
