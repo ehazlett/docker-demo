@@ -30,17 +30,18 @@
                               var el = $("#instance-" + instanceName);
                               if (el.length == 0) {
                                   console.log("creating instance " + instanceName);
-                                  var elData = '<div id="instance-' + instanceName + '" class="card container-instance"><div class="image"><img width="25%" height="25%" src="static/img/container.png"></div><div class="content centered view-computer"><div>' + instanceName + '</div></div></div>';
+                                  var elData = '<div id="instance-' + instanceName + '" class="card container-instance"><div class="image"><img width="25%" height="25%" src="static/img/container.png"></div><div class="content centered view-computer"><div><div id="instance-label-' + instanceName + '"class="ui top right attached green serving label">serving</div>' + instanceName + '</div></div></div>';
                                   $("div.container-group").append(elData);
                                   el = $("#instance-" + instanceName);
                               }
+
+                              var lbl = $("#instance-label-" + instanceName);
+                              if (instanceName == data.instance) {
+                                  $(lbl).fadeIn(250);
+                              } else {
+                                  $(lbl).fadeOut(250);
+                              }
                           }
-            
-                          // "pulse"
-                          var el = $("#instance-" + data.instance);
-                          $(el).fadeToggle(250, function(){
-                              $(el).fadeToggle(250);
-                          });
             
                           $("#container-count").text(containers.length);
                           if (containers.length > 1) {
@@ -52,6 +53,8 @@
                           $("#current-container").text(data.instance);
                           $("#container-backend").removeClass('hide');
                           $("div.container-backend").show();
+
+                          $("#requests-count").text(parseInt($("#requests-count").text()) + 1);
                       }
             
                 });
@@ -73,7 +76,7 @@
                     {{end}}
 
                     <div class="row centered">
-                        <div class="ui huge horizontal statistic">
+                        <div class="ui huge statistic">
                             <div id="container-count" class="value"></div>
                             <div id="container-count-label" class="label"></div>
                         </div>
@@ -82,6 +85,18 @@
                         <div class="ui small statistic">
                             <div id="current-container" class="value"></div>
                             <div class="label">current backend</div>
+                        </div>
+                    </div>
+                    <div class="row centered request-counter">
+                        <div class="ui two statistics">
+                            <div class="ui huge statistic">
+                                <div id="requests-count" class="value">0</div>
+                                <div class="label">requests</div>
+                            </div>
+                            <div class="ui huge statistic">
+                                <div id="requests-error-count" class="value">0</div>
+                                <div class="label">errors</div>
+                            </div>
                         </div>
                     </div>
 

@@ -3,10 +3,10 @@
     overflow-y: auto;
 }
 div.meta {
-    margin-top: 5%;
+    margin-top: 2%;
 }
 .title {
-    margin: 30px 0 40px 0;
+    margin: 20px 0 40px 0;
 }
 .extra-info {
     margin-top: 30px;
@@ -35,6 +35,12 @@ h1.ui.header {
 img.center {
     display: block;
     margin: 0 auto;
+}
+.request-counter {
+    margin: 40px 0 50px;
+}
+.serving {
+    opacity: 0.7;
 }
 @media screen and (min-width: 990px) and (max-width: 1425px) {
     .view-computer{
