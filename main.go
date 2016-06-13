@@ -11,8 +11,9 @@ import (
 )
 
 var (
-	mux        = http.NewServeMux()
-	listenAddr string
+	mux              = http.NewServeMux()
+	listenAddr       string
+	closeConnections bool
 )
 
 type (
@@ -21,6 +22,7 @@ type (
 		Hostname        string
 		RefreshInterval string
 		ExtraInfo       string
+		SkipErrors      bool
 	}
 
 	Ping struct {
@@ -30,6 +32,7 @@ type (
 
 func init() {
 	flag.StringVar(&listenAddr, "listen", ":8080", "listen address")
+	flag.BoolVar(&closeConnections, "close-conn", false, "send Connection:close as a response header for all connections")
 }
 
 func getHostname() string {
@@ -75,12 +78,17 @@ func index(w http.ResponseWriter, r *http.Request) {
 		Hostname:        hostname,
 		RefreshInterval: refreshInterval,
 		ExtraInfo:       extraInfo,
+		SkipErrors:      os.Getenv("SKIP_ERRORS") != "",
 	}
 
 	t.Execute(w, cnt)
 }
 
 func ping(w http.ResponseWriter, r *http.Request) {
+	if closeConnections {
+		w.Header().Set("Connection", "close")
+	}
+
 	hostname := getHostname()
 	p := Ping{
 		Instance: hostname,

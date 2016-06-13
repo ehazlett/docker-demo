@@ -16,51 +16,54 @@
             var containers = [];
             
             function reload() {
+                var ts = new Date().getTime();
                 $.ajax({
-                      url: "/ping",
-                      dataType: "json",
-                      cache: false,
-                      error: function() {
-                          $("#requests-error-count").text(parseInt($("#requests-error-count").text()) + 1);
-                          $(".error").addClass("red");
-                      },
-                      success: function(data){
-                          if ($.inArray(data.instance, containers) == -1) {
-                              containers.push(data.instance);
-                          }
+                     url: "/ping?" + ts,
+                     dataType: "json",
+                     cache: false,
+                     beforeSend: function (request) {},
+                     error: function() {
+                         {{ if not .SkipErrors }}
+                         $("#requests-error-count").text(parseInt($("#requests-error-count").text()) + 1);
+                         $(".error").addClass("red");
+                         {{ end }}
+                     },
+                     success: function(data){
+                         if ($.inArray(data.instance, containers) == -1) {
+                             containers.push(data.instance);
+                         }
             
-                          for (var i=0; i<containers.length; i++) {
-                              var instanceName = containers[i];
-                              var el = $("#instance-" + instanceName);
-                              if (el.length == 0) {
-                                  console.log("creating instance " + instanceName);
-                                  var elData = '<div id="instance-' + instanceName + '" class="card container-instance"><div class="image"><img width="25%" height="25%" src="static/img/container.png"></div><div class="content centered view-computer"><div><div id="instance-label-' + instanceName + '"class="ui top right attached green serving label">serving</div>' + instanceName + '</div></div></div>';
-                                  $("div.container-group").append(elData);
-                                  el = $("#instance-" + instanceName);
-                              }
+                         for (var i=0; i<containers.length; i++) {
+                             var instanceName = containers[i];
+                             var el = $("#instance-" + instanceName);
+                             if (el.length == 0) {
+                                 console.log("creating instance " + instanceName);
+                                 var elData = '<div id="instance-' + instanceName + '" class="card container-instance"><div class="image"><img width="25%" height="25%" src="static/img/container.png"></div><div class="content centered view-computer"><div><div id="instance-label-' + instanceName + '"class="ui top right attached green serving label">serving</div>' + instanceName + '</div></div></div>';
+                                 $("div.container-group").append(elData);
+                                 el = $("#instance-" + instanceName);
+                             }
 
-                              var lbl = $("#instance-label-" + instanceName);
-                              if (instanceName == data.instance) {
-                                  $(lbl).fadeIn(250);
-                              } else {
-                                  $(lbl).fadeOut(250);
-                              }
-                          }
+                             var lbl = $("#instance-label-" + instanceName);
+                             if (instanceName == data.instance) {
+                                 $(lbl).fadeIn(250);
+                             } else {
+                                 $(lbl).fadeOut(250);
+                             }
+                         }
             
-                          $("#container-count").text(containers.length);
-                          if (containers.length > 1) {
-                              $("#container-count-label").text("containers");
-                          } else {
-                              $("#container-count-label").text("container");
-                          }
+                         $("#container-count").text(containers.length);
+                         if (containers.length > 1) {
+                             $("#container-count-label").text("containers");
+                         } else {
+                             $("#container-count-label").text("container");
+                         }
             
-                          $("#current-container").text(data.instance);
-                          $("#container-backend").removeClass('hide');
-                          $("div.container-backend").show();
+                         $("#current-container").text(data.instance);
+                         $("#container-backend").removeClass('hide');
+                         $("div.container-backend").show();
 
-                          $("#requests-count").text(parseInt($("#requests-count").text()) + 1);
-                      }
-            
+                         $("#requests-count").text(parseInt($("#requests-count").text()) + 1);
+                     }
                 });
             }
             
