@@ -19,14 +19,17 @@ var (
 type (
 	Content struct {
 		Title           string
+		Version         string
 		Hostname        string
 		RefreshInterval string
 		ExtraInfo       string
 		SkipErrors      bool
+		ShowVersion     bool
 	}
 
 	Ping struct {
 		Instance string `json:"instance"`
+		Version  string `json:"version"`
 	}
 )
 
@@ -42,6 +45,15 @@ func getHostname() string {
 	}
 
 	return hostname
+}
+
+func getVersion() string {
+	ver := os.Getenv("VERSION")
+	if ver == "" {
+		ver = "0.1"
+	}
+
+	return ver
 }
 
 func loadTemplate(filename string) (*template.Template, error) {
@@ -75,10 +87,12 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 	cnt := &Content{
 		Title:           title,
+		Version:         getVersion(),
 		Hostname:        hostname,
 		RefreshInterval: refreshInterval,
 		ExtraInfo:       extraInfo,
 		SkipErrors:      os.Getenv("SKIP_ERRORS") != "",
+		ShowVersion:     os.Getenv("SHOW_VERSION") != "",
 	}
 
 	t.Execute(w, cnt)
@@ -92,6 +106,7 @@ func ping(w http.ResponseWriter, r *http.Request) {
 	hostname := getHostname()
 	p := Ping{
 		Instance: hostname,
+		Version:  getVersion(),
 	}
 
 	if err := json.NewEncoder(w).Encode(p); err != nil {
@@ -109,6 +124,7 @@ func main() {
 	hostname := getHostname()
 
 	log.Printf("instance: %s\n", hostname)
+	log.Printf("close connections: %v", closeConnections)
 	log.Printf("listening on %s\n", listenAddr)
 
 	if err := http.ListenAndServe(listenAddr, mux); err != nil {

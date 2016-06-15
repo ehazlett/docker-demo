@@ -2,9 +2,7 @@
     height: 95vh;
     overflow-y: auto;
 }
-div.meta {
-    margin-top: 2%;
-}
+div.meta {}
 .title {
     margin: 20px 0 40px 0;
 }

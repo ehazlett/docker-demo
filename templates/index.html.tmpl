@@ -14,6 +14,24 @@
 
         <script type="text/javascript">
             var containers = [];
+            var colors = new Object;
+
+            function getColor() {
+                var allColors = [
+                    "red",
+                    "orange",
+                    "yellow",
+                    "olive",
+                    "green",
+                    "teal",
+                    "blue",
+                    "violet",
+                    "purple",
+                    "pink"
+                ]
+
+                return allColors[Math.floor(Math.random()*allColors.length)];
+            }
             
             function reload() {
                 var ts = new Date().getTime();
@@ -29,26 +47,31 @@
                          {{ end }}
                      },
                      success: function(data){
+                         if (! (colors.hasOwnProperty(data.version))) {
+                             colors[data.version] = getColor();
+                         }
+                         var color = colors[data.version];
                          if ($.inArray(data.instance, containers) == -1) {
                              containers.push(data.instance);
                          }
             
                          for (var i=0; i<containers.length; i++) {
-                             var instanceName = containers[i];
-                             var el = $("#instance-" + instanceName);
-                             if (el.length == 0) {
-                                 console.log("creating instance " + instanceName);
-                                 var elData = '<div id="instance-' + instanceName + '" class="card container-instance"><div class="image"><img width="25%" height="25%" src="static/img/container.png"></div><div class="content centered view-computer"><div><div id="instance-label-' + instanceName + '"class="ui top right attached green serving label">serving</div>' + instanceName + '</div></div></div>';
-                                 $("div.container-group").append(elData);
-                                 el = $("#instance-" + instanceName);
-                             }
+                            var instanceName = containers[i];
+                            var el = $("#instance-" + instanceName);
+                            if (el.length == 0) {
+                                console.log("creating instance " + instanceName);
+                                var elData = '<div id="instance-' + instanceName + '" class="card container-instance"><div class="image"><img width="25%" height="25%" src="static/img/container.png"></div><div class="content centered view-computer"><div> {{ if .ShowVersion }}<div class="ui top left attached ' + color + ' label">' + data.version +'</div>{{ end }} <div id="instance-label-' + instanceName + '"class="ui top right attached green serving label">serving</div>' + instanceName + '</div></div></div>';
 
-                             var lbl = $("#instance-label-" + instanceName);
-                             if (instanceName == data.instance) {
-                                 $(lbl).fadeIn(250);
-                             } else {
-                                 $(lbl).fadeOut(250);
-                             }
+                                $("div.container-group").append(elData);
+                                el = $("#instance-" + instanceName);
+                            }
+
+                            var lbl = $("#instance-label-" + instanceName);
+                            if (instanceName == data.instance) {
+                                $(lbl).fadeIn(250);
+                            } else {
+                                $(lbl).fadeOut(250);
+                            }
                          }
             
                          $("#container-count").text(containers.length);
@@ -59,6 +82,7 @@
                          }
             
                          $("#current-container").text(data.instance);
+                         $("#current-container-version").text(data.version);
                          $("#container-backend").removeClass('hide');
                          $("div.container-backend").show();
 
@@ -89,11 +113,21 @@
                         </div>
                     </div>
                     <div class="row centered container-backend hide">
-                        <div class="ui small statistic">
+                        <div class="ui statistic">
                             <div id="current-container" class="value"></div>
                             <div class="label">current backend</div>
                         </div>
                     </div>
+
+                    {{ if .ShowVersion }}
+                    <div class="row centered container-backend hide">
+                        <div class="ui large statistic">
+                            <div id="current-container-version" class="value"></div>
+                            <div class="label">current version</div>
+                        </div>
+                    </div>
+                    {{ end }}
+
                     <div class="row centered request-counter">
                         <div class="ui two statistics">
                             <div class="ui huge statistic">
