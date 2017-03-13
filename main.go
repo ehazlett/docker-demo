@@ -11,9 +11,8 @@ import (
 )
 
 var (
-	mux              = http.NewServeMux()
-	listenAddr       string
-	closeConnections bool
+	mux        = http.NewServeMux()
+	listenAddr string
 )
 
 type (
@@ -35,7 +34,6 @@ type (
 
 func init() {
 	flag.StringVar(&listenAddr, "listen", ":8080", "listen address")
-	flag.BoolVar(&closeConnections, "close-conn", false, "send Connection:close as a response header for all connections")
 }
 
 func getHostname() string {
@@ -99,9 +97,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func ping(w http.ResponseWriter, r *http.Request) {
-	if closeConnections {
-		w.Header().Set("Connection", "close")
-	}
+	w.Header().Set("Connection", "close")
 
 	hostname := getHostname()
 	p := Ping{
@@ -124,7 +120,6 @@ func main() {
 	hostname := getHostname()
 
 	log.Printf("instance: %s\n", hostname)
-	log.Printf("close connections: %v", closeConnections)
 	log.Printf("listening on %s\n", listenAddr)
 
 	if err := http.ListenAndServe(listenAddr, mux); err != nil {
