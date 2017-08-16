@@ -29,6 +29,7 @@ type (
 	Ping struct {
 		Instance string `json:"instance"`
 		Version  string `json:"version"`
+		Meta     string `json:"meta,omitempty"`
 	}
 )
 
@@ -58,6 +59,10 @@ func loadTemplate(filename string) (*template.Template, error) {
 	return template.ParseFiles(filename)
 }
 
+func extraInfo() string {
+	return os.Getenv("EXTRA_INFO")
+}
+
 func index(w http.ResponseWriter, r *http.Request) {
 	remote := r.RemoteAddr
 
@@ -75,7 +80,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 	}
 
 	title := os.Getenv("TITLE")
-	extraInfo := os.Getenv("EXTRA_INFO")
 
 	hostname := getHostname()
 	refreshInterval := os.Getenv("REFRESH_INTERVAL")
@@ -88,7 +92,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		Version:         getVersion(),
 		Hostname:        hostname,
 		RefreshInterval: refreshInterval,
-		ExtraInfo:       extraInfo,
+		ExtraInfo:       extraInfo(),
 		SkipErrors:      os.Getenv("SKIP_ERRORS") != "",
 		ShowVersion:     os.Getenv("SHOW_VERSION") != "",
 	}
@@ -103,6 +107,7 @@ func ping(w http.ResponseWriter, r *http.Request) {
 	p := Ping{
 		Instance: hostname,
 		Version:  getVersion(),
+		Meta:     extraInfo(),
 	}
 
 	if err := json.NewEncoder(w).Encode(p); err != nil {
