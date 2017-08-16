@@ -32,7 +32,7 @@
 
                 return allColors[Math.floor(Math.random()*allColors.length)];
             }
-            
+
             function reload() {
                 var ts = new Date().getTime();
                 $.ajax({
@@ -54,7 +54,7 @@
                          if ($.inArray(data.instance, containers) == -1) {
                              containers.push(data.instance);
                          }
-            
+
                          for (var i=0; i<containers.length; i++) {
                             var instanceName = containers[i];
                             var el = $("#instance-" + instanceName);
@@ -73,14 +73,14 @@
                                 $(lbl).fadeOut(250);
                             }
                          }
-            
+
                          $("#container-count").text(containers.length);
                          if (containers.length > 1) {
                              $("#container-count-label").text("containers");
                          } else {
                              $("#container-count-label").text("container");
                          }
-            
+
                          $("#current-container").text(data.instance);
                          $("#current-container-version").text(data.version);
                          $("#container-backend").removeClass('hide');
@@ -90,7 +90,7 @@
                      }
                 });
             }
-            
+
             setInterval(reload, {{ .RefreshInterval }});
         </script>
     </head>
@@ -141,9 +141,9 @@
                         </div>
                     </div>
 
-                    {{ if ne .ExtraInfo "" }}
+                    {{ if ne .Metadata "" }}
                     <div class="row centered extra-info">
-                        {{ .ExtraInfo }}
+                        {{ .Metadata }}
                     </div>
                     {{ end }}
                 </div>

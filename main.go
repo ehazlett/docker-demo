@@ -21,7 +21,7 @@ type (
 		Version         string
 		Hostname        string
 		RefreshInterval string
-		ExtraInfo       string
+		Metadata        string
 		SkipErrors      bool
 		ShowVersion     bool
 	}
@@ -29,7 +29,7 @@ type (
 	Ping struct {
 		Instance string `json:"instance"`
 		Version  string `json:"version"`
-		Meta     string `json:"meta,omitempty"`
+		Metadata string `json:"metadata,omitempty"`
 	}
 )
 
@@ -59,8 +59,8 @@ func loadTemplate(filename string) (*template.Template, error) {
 	return template.ParseFiles(filename)
 }
 
-func extraInfo() string {
-	return os.Getenv("EXTRA_INFO")
+func getMetadata() string {
+	return os.Getenv("METADATA")
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
@@ -92,7 +92,7 @@ func index(w http.ResponseWriter, r *http.Request) {
 		Version:         getVersion(),
 		Hostname:        hostname,
 		RefreshInterval: refreshInterval,
-		ExtraInfo:       extraInfo(),
+		Metadata:        getMetadata(),
 		SkipErrors:      os.Getenv("SKIP_ERRORS") != "",
 		ShowVersion:     os.Getenv("SHOW_VERSION") != "",
 	}
@@ -107,7 +107,7 @@ func ping(w http.ResponseWriter, r *http.Request) {
 	p := Ping{
 		Instance: hostname,
 		Version:  getVersion(),
-		Meta:     extraInfo(),
+		Metadata: getMetadata(),
 	}
 
 	if err := json.NewEncoder(w).Encode(p); err != nil {
