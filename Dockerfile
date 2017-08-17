@@ -1,4 +1,4 @@
-FROM scratch
+FROM alpine:latest
 COPY docker-demo /bin/docker-demo
 COPY static /static
 COPY templates /templates
