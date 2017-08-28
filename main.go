@@ -27,9 +27,10 @@ type (
 	}
 
 	Ping struct {
-		Instance string `json:"instance"`
-		Version  string `json:"version"`
-		Metadata string `json:"metadata,omitempty"`
+		Instance  string `json:"instance"`
+		Version   string `json:"version"`
+		Metadata  string `json:"metadata,omitempty"`
+		RequestID string `json:"request_id,omitempty"`
 	}
 )
 
@@ -108,6 +109,11 @@ func ping(w http.ResponseWriter, r *http.Request) {
 		Instance: hostname,
 		Version:  getVersion(),
 		Metadata: getMetadata(),
+	}
+
+	requestID := r.Header.Get("X-Request-ID")
+	if requestID != "" {
+		p.RequestID = requestID
 	}
 
 	if err := json.NewEncoder(w).Encode(p); err != nil {
