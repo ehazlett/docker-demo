@@ -111,7 +111,7 @@ func ping(w http.ResponseWriter, r *http.Request) {
 		Metadata: getMetadata(),
 	}
 
-	requestID := r.Header.Get("X-Request-ID")
+	requestID := r.Header.Get("X-Request-Id")
 	if requestID != "" {
 		p.RequestID = requestID
 	}
