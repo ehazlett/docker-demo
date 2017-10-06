@@ -16,7 +16,7 @@ deps:
 	@go get -d ./...
 
 build:
-	@go build -a -tags 'netgo' -ldflags '-w -linkmode external -extldflags -static' .
+	@go build -a -v -tags 'netgo' -ldflags '-w -linkmode external -extldflags -static' .
 
 dev-setup:
 	@echo "This could take a while..."

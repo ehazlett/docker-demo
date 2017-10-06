@@ -2,17 +2,17 @@ package main
 
 import (
 	"encoding/json"
-	"flag"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
+
+	"github.com/urfave/cli"
 )
 
 var (
-	mux        = http.NewServeMux()
-	listenAddr string
+	mux = http.NewServeMux()
 )
 
 type (
@@ -33,10 +33,6 @@ type (
 		RequestID string `json:"request_id,omitempty"`
 	}
 )
-
-func init() {
-	flag.StringVar(&listenAddr, "listen", ":8080", "listen address")
-}
 
 func getHostname() string {
 	hostname, err := os.Hostname()
@@ -122,18 +118,53 @@ func ping(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	flag.Parse()
+	app := cli.NewApp()
+	app.Name = "docker-demo"
+	app.Usage = "docker demo application"
+	app.Version = "1.0.0"
+	app.Author = "@ehazlett"
+	app.Email = ""
+	app.Flags = []cli.Flag{
+		cli.StringFlag{
+			Name:  "listen-addr, l",
+			Usage: "listen address",
+			Value: ":8080",
+		},
+		cli.StringFlag{
+			Name:  "tls-cert, c",
+			Usage: "tls certificate",
+			Value: "",
+		},
+		cli.StringFlag{
+			Name:  "tls-key, k",
+			Usage: "tls certificate key",
+			Value: "",
+		},
+	}
+	app.Action = func(c *cli.Context) error {
+		mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
+		mux.HandleFunc("/ping", ping)
+		mux.HandleFunc("/", index)
 
-	mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
-	mux.HandleFunc("/ping", ping)
-	mux.HandleFunc("/", index)
+		hostname := getHostname()
+		listenAddr := c.String("listen-addr")
+		tlsCert := c.String("tls-cert")
+		tlsKey := c.String("tls-key")
 
-	hostname := getHostname()
+		log.Printf("instance: %s\n", hostname)
+		log.Printf("listening on %s\n", listenAddr)
 
-	log.Printf("instance: %s\n", hostname)
-	log.Printf("listening on %s\n", listenAddr)
+		var err error
+		if tlsCert != "" && tlsKey != "" {
+			err = http.ListenAndServeTLS(listenAddr, tlsCert, tlsKey, mux)
+		} else {
+			err = http.ListenAndServe(listenAddr, mux)
+		}
 
-	if err := http.ListenAndServe(listenAddr, mux); err != nil {
-		log.Fatalf("error serving: %s", err)
+		return err
+	}
+
+	if err := app.Run(os.Args); err != nil {
+		log.Fatal(err)
 	}
 }
