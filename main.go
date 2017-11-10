@@ -7,12 +7,14 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/urfave/cli"
 )
 
 var (
-	mux = http.NewServeMux()
+	mux           = http.NewServeMux()
+	sessionCookie = "session"
 )
 
 type (
@@ -111,6 +113,20 @@ func ping(w http.ResponseWriter, r *http.Request) {
 	if requestID != "" {
 		p.RequestID = requestID
 	}
+
+	current, _ := r.Cookie(sessionCookie)
+	if current == nil {
+		current = &http.Cookie{
+			Name:    sessionCookie,
+			Value:   fmt.Sprintf("%d", time.Now().UnixNano()),
+			Path:    "/",
+			Expires: time.Now().AddDate(0, 0, 1),
+			MaxAge:  86400,
+		}
+	}
+	fmt.Printf("cookie: %s\n", current.Value)
+
+	http.SetCookie(w, current)
 
 	if err := json.NewEncoder(w).Encode(p); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
