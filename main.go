@@ -106,6 +106,9 @@ func index(w http.ResponseWriter, r *http.Request) {
 }
 
 func ping(w http.ResponseWriter, r *http.Request) {
+	waitGroup.Add(1)
+	defer waitGroup.Done()
+
 	w.Header().Set("Connection", "close")
 
 	hostname := getHostname()
