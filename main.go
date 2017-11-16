@@ -1,12 +1,15 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"html/template"
 	"log"
 	"net/http"
 	"os"
+	"os/signal"
+	"sync"
 	"time"
 
 	"github.com/urfave/cli"
@@ -15,6 +18,7 @@ import (
 var (
 	mux           = http.NewServeMux()
 	sessionCookie = "session"
+	waitGroup     = sync.WaitGroup{}
 )
 
 type (
@@ -63,6 +67,8 @@ func getMetadata() string {
 }
 
 func index(w http.ResponseWriter, r *http.Request) {
+	waitGroup.Add(1)
+	defer waitGroup.Done()
 	remote := r.RemoteAddr
 
 	forwarded := r.Header.Get("X-Forwarded-For")
@@ -133,6 +139,11 @@ func ping(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+func waitForDone(ctx context.Context) {
+	waitGroup.Wait()
+	ctx.Done()
+}
+
 func main() {
 	app := cli.NewApp()
 	app.Name = "docker-demo"
@@ -167,14 +178,39 @@ func main() {
 		tlsCert := c.String("tls-cert")
 		tlsKey := c.String("tls-key")
 
+		srv := &http.Server{
+			Handler:      mux,
+			Addr:         listenAddr,
+			WriteTimeout: time.Second * 10,
+			ReadTimeout:  time.Second * 10,
+		}
+
 		log.Printf("instance: %s\n", hostname)
 		log.Printf("listening on %s\n", listenAddr)
 
+		ch := make(chan os.Signal, 1)
+		signal.Notify(ch, os.Interrupt)
+
+		go func() {
+			select {
+			case <-ch:
+				log.Println("stopping")
+				ctx, cancel := context.WithTimeout(context.Background(), time.Second*5)
+				defer cancel()
+
+				waitForDone(ctx)
+
+				if err := srv.Shutdown(ctx); err != nil {
+					log.Fatal(err)
+				}
+			}
+		}()
+
 		var err error
 		if tlsCert != "" && tlsKey != "" {
-			err = http.ListenAndServeTLS(listenAddr, tlsCert, tlsKey, mux)
+			err = srv.ListenAndServeTLS(tlsCert, tlsKey)
 		} else {
-			err = http.ListenAndServe(listenAddr, mux)
+			err = srv.ListenAndServe()
 		}
 
 		return err
