@@ -85,6 +85,7 @@
                          $("#current-container-version").text(data.version);
                          $("#container-backend").removeClass('hide');
                          $("div.container-backend").show();
+                         $("#extra-info").text(data.metadata);
 
                          $("#requests-count").text(parseInt($("#requests-count").text()) + 1);
                      }
