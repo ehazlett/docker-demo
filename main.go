@@ -19,6 +19,8 @@ var (
 	mux           = http.NewServeMux()
 	sessionCookie = "session"
 	waitGroup     = sync.WaitGroup{}
+	started       = time.Now()
+	requests      = 0
 )
 
 type (
@@ -38,6 +40,12 @@ type (
 		Metadata  string `json:"metadata,omitempty"`
 		RequestID string `json:"request_id,omitempty"`
 	}
+
+	Info struct {
+		Hostname string `json:"hostname"`
+		Uptime   string `json:"uptime"`
+		Requests int    `json:"requests"`
+	}
 )
 
 func getHostname() string {
@@ -56,6 +64,21 @@ func getVersion() string {
 	}
 
 	return ver
+}
+
+func getInfo() (*Info, error) {
+	hostname, err := os.Hostname()
+	if err != nil {
+		return nil, err
+	}
+
+	uptime := time.Now().Sub(started)
+
+	return &Info{
+		Hostname: hostname,
+		Uptime:   uptime.String(),
+		Requests: requests,
+	}, nil
 }
 
 func loadTemplate(filename string) (*template.Template, error) {
@@ -105,6 +128,26 @@ func index(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, cnt)
 }
 
+func info(w http.ResponseWriter, r *http.Request) {
+	waitGroup.Add(1)
+	defer waitGroup.Done()
+
+	w.Header().Set("Connection", "close")
+
+	i, err := getInfo()
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	enc := json.NewEncoder(w)
+	enc.SetIndent("", "  ")
+	if err := enc.Encode(i); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
 func ping(w http.ResponseWriter, r *http.Request) {
 	waitGroup.Add(1)
 	defer waitGroup.Done()
@@ -147,11 +190,18 @@ func waitForDone(ctx context.Context) {
 	ctx.Done()
 }
 
+func counter(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		requests++
+		h.ServeHTTP(w, r)
+	})
+}
+
 func main() {
 	app := cli.NewApp()
 	app.Name = "docker-demo"
 	app.Usage = "docker demo application"
-	app.Version = "1.0.0"
+	app.Version = "1.0.1"
 	app.Author = "@ehazlett"
 	app.Email = ""
 	app.Flags = []cli.Flag{
@@ -173,8 +223,9 @@ func main() {
 	}
 	app.Action = func(c *cli.Context) error {
 		mux.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
-		mux.HandleFunc("/ping", ping)
-		mux.HandleFunc("/", index)
+		mux.Handle("/ping", counter(http.HandlerFunc(ping)))
+		mux.Handle("/info", counter(http.HandlerFunc(info)))
+		mux.Handle("/", counter(http.HandlerFunc(index)))
 
 		hostname := getHostname()
 		listenAddr := c.String("listen-addr")

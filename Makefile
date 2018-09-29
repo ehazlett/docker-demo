@@ -9,7 +9,10 @@ all: build
 test:
 	@go test -v ./...
 
+binary:
+	@go build -ldflags '-w -linkmode external -extldflags -static' -o docker-demo .
+
 build:
 	@docker build -t ${REPO}:${TAG} .
 
-.PHONY: build
+.PHONY: build binary
