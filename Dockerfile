@@ -7,13 +7,13 @@ RUN cd /tmp && npm install && \
     cp -rf /tmp/node_modules /usr/src/app/ui/
 WORKDIR /usr/src/app
 COPY . /usr/src/app
-RUN cd ui/node_modules/semantic-ui && gulp install
+RUN cd ui/node_modules/fomantic-ui && npx gulp install
 RUN cp -f ui/semantic.theme.config ui/semantic/src/theme.config && \
     mkdir -p ui/semantic/src/themes/app && \
     cp -rf ui/semantic.theme/* ui/semantic/src/themes/app
-RUN cd ui/semantic && gulp build
+RUN cd ui/semantic && npx gulp build
 
-FROM golang:1.11-alpine as app
+FROM golang:1.14-alpine as app
 RUN apk add -U build-base git
 COPY . /go/src/app
 WORKDIR /go/src/app
@@ -21,7 +21,6 @@ ENV GO111MODULE=on
 RUN go build -a -v -tags 'netgo' -ldflags '-w -linkmode external -extldflags -static' -o docker-demo .
 
 FROM alpine:latest
-MAINTAINER "Evan Hazlett <ejhazlett@gmail.com>"
 RUN apk add -U --no-cache curl
 COPY static /static
 COPY --from=ui /usr/src/app/ui/semantic/dist/semantic.min.css static/dist/semantic.min.css

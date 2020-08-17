@@ -4,7 +4,9 @@
   "description": "",
   "main": "webpack.config.js",
   "dependencies": {
-    "semantic-ui": "2.2.13"
+    "fomantic-ui": "^2.8.6",
+    "graceful-fs": "^4.2.4",
+    "minimatch": "^3.0.2"
   },
   "author": "ehazlett",
   "license": ""
